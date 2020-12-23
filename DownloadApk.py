@@ -26,6 +26,7 @@ class DownloadApk:
     def download_software(self,software_name, save_dir):
         save_path = save_dir + "/"+software_name + '.apk'
         software_url = self.search_software_url(software_name)
+        # print(software_url)
         if not software_url:return
         # request software resource
         response = self.request_web(software_url)
@@ -35,8 +36,8 @@ class DownloadApk:
                 f.write(response.content)
             print("download {} success".format(software_name))
         except Exception as e:
-            print(e)
-            print("download {} failed".format(software_name))
+            self.log(str(e))
+            self.log("download {} failed".format(software_name))
 
     def search_software_url(self, software_name):
         url = 'https://sj.qq.com/myapp/searchAjax.htm?kw={}'.format(software_name)
