@@ -7,6 +7,8 @@ class DownloadApk:
         self.headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36'
         }
+        self.exact_match = False
+
     def log(self,log):
         print(log)
         with open("./log.txt","a+") as f:
@@ -24,18 +26,17 @@ class DownloadApk:
     def download_software(self,software_name, save_dir):
         save_path = save_dir + "/"+software_name + '.apk'
         software_url = self.search_software_url(software_name)
-        print(software_url)
-        # if not software_url:return
-        # # request software resource
-        # response = self.request_web(software_url)
-        # # save software to file
-        # try:
-        #     with open(save_path, mode='wb+') as f:
-        #         f.write(response.content)
-        #     print("download {} success".format(software_name))
-        # except Exception as e:
-        #     print(e)
-        #     print("download {} failed".format(software_name))
+        if not software_url:return
+        # request software resource
+        response = self.request_web(software_url)
+        # save software to file
+        try:
+            with open(save_path, mode='wb+') as f:
+                f.write(response.content)
+            print("download {} success".format(software_name))
+        except Exception as e:
+            print(e)
+            print("download {} failed".format(software_name))
 
     def search_software_url(self, software_name):
         url = 'https://sj.qq.com/myapp/searchAjax.htm?kw={}'.format(software_name)
@@ -47,10 +48,14 @@ class DownloadApk:
             return None
         return software_url
 
-    @staticmethod
-    def parse_download_url(response,software_name):
+    def parse_download_url(self,response,software_name):
         urls = re.findall(r'"apkUrl":"(.*?)","appDownCount":.*?,"appId":.*?,"appName":"{}"'.format(software_name), response.text)
         if len(urls) > 0: return urls[0]
+
+        if self.exact_match:
+            urls = re.findall(r'"apkUrl":"(.*?)","appDownCount"'.format(software_name),
+                              response.text)
+            if len(urls) > 0: return urls[0]
         return None
 
     @staticmethod
