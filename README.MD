@@ -11,7 +11,7 @@ python3 DownloadApk.py ./software.xlsx ./out
 ```
 
 ## 参数说明
-* 第一个参数：需要下载的软件文件，目前仅支持excel文件和txt格式的文档
+* 第一个参数：需要下载的软件文件，目前仅支持excel文件和txt格式的文档。excel文档需要把软件名放到第一列。
 * 第二个参数：软件下载保存的文件夹
 
 
